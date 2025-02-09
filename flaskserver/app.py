@@ -12,7 +12,8 @@ import numpy as np
 app = Flask(__name__)
 CORS(app)
 
-youtube_url = "https://www.youtube.com/watch?v=DVMjtoeKEO8"
+youtube_url = "https://www.youtube.com/watch?v=DjdUEyjx8GM"
+# youtube_url = 'https://www.youtube.com/live/Hd7qdegUP1U'
 
 def get_stream_url(youtube_url):
     ydl_opts = {
@@ -30,7 +31,8 @@ stream_url = get_stream_url(youtube_url)
 if webcam == 0:
     camera = cv2.VideoCapture(0)
 else:
-    camera = cv2.VideoCapture(stream_url)  # Change the argument for other video sources (e.g., video file or RTSP stream)
+    camera_w = cv2.VideoCapture(stream_url)
+    camera_y = cv2.VideoCapture(stream_url)  # Change the argument for other video sources (e.g., video file or RTSP stream)
 # camera = cv2.VideoCapture(r"C:\Users\Wilson\FYP\video\PhilippinesStreet.mp4")  # Change the argument for other video sources (e.g., video file or RTSP stream)
 
 ffmpeg_command = [
@@ -39,6 +41,7 @@ ffmpeg_command = [
     '-f', 'rawvideo',
     '-pix_fmt', 'bgr24',  # Raw pixel format in BGR
     '-an',                # Disable audio
+    # '-timeout', '60000000'
     '-'
 ]
 
@@ -48,10 +51,13 @@ model = YOLO(r"C:\Users\Wilson\FYP\runs\detect\epoch50\weights\best.pt")
 
 averageCrowd_count = 0
 lock = threading.Lock()
+camera_lock = threading.Lock()
 
-check_sum = 0
+check_sum = 15
+hold = 1500
 def process_video():
     global averageCrowd_count
+    global camera_y
     print("yo - process_video started")
 
     # Initialize variables outside the loop
@@ -59,10 +65,21 @@ def process_video():
     while True:
         print("Thread is alive") 
         if webcam == 1:
-            success, frame = camera.read()
+            # with camera_lock:
+            with lock:
+                success, frame = camera_y.read()
             if not success:
-                print("Camera read failed")
-                break
+                # camera.release()  # Release the current capture object
+                # time.sleep(1)  # Allow time for reconnection
+                # camera = cv2.VideoCapture(stream_url)  # Reinitialize the stream
+                continue
+
+        elif webcam == 0:
+            # with camera_lock:
+            with lock:
+                success, frame = camera.read()
+            if not success:
+                continue
         else:
             raw_frame = process.stdout.read(1080 * 1920 * 3)
             if not raw_frame:
@@ -95,17 +112,22 @@ def process_video():
                     head_count += 1
 
             # Update sliding window lists
-            # global check_sum
-            # if check_sum <= 15:
-            #     annotated_frame = results.plot()
-            #     # cv2.imshow("YOLO Detections", annotated_frame)
+            global check_sum
+            global hold
+            if check_sum >= 0:
+                if person_count >10:
+                    if hold >= check_sum*100:
+                        hold -= 1
+                    else:
+                        annotated_frame = results.plot()
+                        # cv2.imshow("YOLO Detections", annotated_frame)
 
-            #     # Save the frame
-            #     output_path = f"checkimage/output_frame{check_sum}.jpg"  # Specify the path and filename
-            #     cv2.imwrite(output_path, annotated_frame)  # Save the frame as an image
-            #     print(f"Frame saved to {output_path}")
+                        # Save the frame
+                        output_path = f"checkimage/output_frame{check_sum}.jpg"  # Specify the path and filename
+                        cv2.imwrite(output_path, annotated_frame)  # Save the frame as an image
+                        print(f"Frame saved to {output_path}")
 
-            #     check_sum += 1
+                        check_sum -= 1
 
             print("Head count: ", head_count, "People count: ", person_count)
 
@@ -125,17 +147,34 @@ print("Thread started")
 
 def generate_frames():
     while True:
-        success, frame = camera.read()
-        if not success:
-            break
-        else:
-            # Encode the frame in JPEG format
-            _, buffer = cv2.imencode('.jpg', frame)
-            frame = buffer.tobytes()
+        if webcam == 1:
+            # with camera_lock:
+            with lock:
+                success, frame = camera_w.read()
+            if not success:
+                continue
+            else:
+                # Encode the frame in JPEG format
+                _, buffer = cv2.imencode('.jpg', frame)
+                frame = buffer.tobytes()
 
-            # Yield the frame as part of the multipart response
-            yield (b'--frame\r\n'
-                   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+                # Yield the frame as part of the multipart response
+                yield (b'--frame\r\n'
+                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+        elif webcam == 0:
+            # with camera_lock:
+            with lock:
+                success, frame = camera.read()
+            if not success:
+                continue
+            else:
+                # Encode the frame in JPEG format
+                _, buffer = cv2.imencode('.jpg', frame)
+                frame = buffer.tobytes()
+
+                # Yield the frame as part of the multipart response
+                yield (b'--frame\r\n'
+                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
 @app.route('/video_feed')
 def video_feed():
