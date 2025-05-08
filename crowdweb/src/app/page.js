@@ -17,6 +17,9 @@ export default function Home() {
   const [sliceName, setSliceName] = useState("0");
   const [rightDrawer, setRightDrawer] = useState(false);
 
+  const backendURL = "http://localhost:5000"
+  // const backendURL = "13.210.21.192:5000"
+
   useEffect(() => {
     const interval = setInterval(()=> {
       fetchCount()
@@ -26,7 +29,7 @@ export default function Home() {
   }, []);
 
   const fetchCount = async () => {
-    fetch("http://localhost:5000/crowd_count")
+    fetch(`${backendURL}/crowd_count`)
       .then((response) => response.json())
       .then((data) => setPeopleCount(data.averageCrowdCount))
       .catch((error) => console.error("Error fetching data:", error));
@@ -51,7 +54,7 @@ export default function Home() {
     setRightDrawer(rightDrawer => !rightDrawer)
   }
   const changeModel = async (model) => {
-    fetch("http://localhost:5000/change_model",{
+    fetch(`${backendURL}/change_model`,{
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -64,7 +67,7 @@ export default function Home() {
   }
 
   const changeView = async (view) => {
-    fetch("http://localhost:5000/change_view",{
+    fetch(`${backendURL}/change_view`,{
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -77,7 +80,7 @@ export default function Home() {
   }
 
   const changeSlice = async (slice) => {
-    fetch("http://localhost:5000/change_slice",{
+    fetch(`${backendURL}/change_slice`,{
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -93,7 +96,7 @@ export default function Home() {
       <List sx={{ width: 700 }}>
         {/* Model selection */}
         <div style ={{display:'flex', alignItems: 'center',  height: "10%", width: '100%', backgroundColor: "#ffffff"}}>
-        <button style = {{borderRadius: '80px', marginLeft:'5%', border:'none', width: "80px", height: "80px", whiteSpace: "normal", backgroundColor: rightDrawer ? '#6ebae6': '#0c3181', textAlign: "center", fontSize: "50px", color:'#000000'}} onClick = {()=> rightDrawerClick()}>X</button>
+        <button style = {{borderRadius: '80px', marginLeft:'5%', border:'none', width: "80px", height: "80px", whiteSpace: "normal", backgroundColor: rightDrawer ? '#ca5410':'#d48a5e', textAlign: "center", fontSize: "50px", color:'#ffffff'}} onClick = {()=> rightDrawerClick()}>X</button>
         </div>
         <div style ={{display: 'flex', flexDirection:'column', height: "20%", width: '100%',justifyContent: 'center', alignItems: 'center', backgroundColor: "#ffffff"}}>
           <p style = {{display: 'flex', color: "#000000", fontSize: "80px"}}>
@@ -110,7 +113,7 @@ export default function Home() {
           <ListItemButton
             selected={modelName === "1"}
             onClick={() => modelClick("1")}
-            style={{ borderRadius: '10px', backgroundColor: modelName === "1" ? '#0c3181' : '#6ebae6', color: 'white' }}
+            style={{ borderRadius: '10px', backgroundColor: modelName === "1" ? '#ca5410':'#d48a5e', color: 'white' }}
           >
             <ListItemText style = {{textAlign: 'center'}} primary="Head + Person CrowdHuman" slotProps={{primary: {sx: {fontSize: '30px'}}}}/>
           </ListItemButton>
@@ -120,7 +123,7 @@ export default function Home() {
           <ListItemButton
             selected={modelName === "2"}
             onClick={() => modelClick("2")}
-            style={{ borderRadius: '10px', backgroundColor: modelName === "2" ? '#0c3181' : '#6ebae6', color: 'white' }}
+            style={{ borderRadius: '10px', backgroundColor: modelName === "2" ? '#ca5410':'#d48a5e', color: 'white' }}
           >
             <ListItemText style = {{textAlign: 'center'}} primary="Head Only CrowdHuman" slotProps={{primary: {sx: {fontSize: '30px'}}}}/>
           </ListItemButton>
@@ -130,7 +133,7 @@ export default function Home() {
           <ListItemButton
             selected={modelName === "3"}
             onClick={() => modelClick("3")}
-            style={{ borderRadius: '10px', backgroundColor: modelName === "3" ? '#0c3181' : '#6ebae6', color: 'white' }}
+            style={{ borderRadius: '10px', backgroundColor: modelName === "3" ? '#ca5410':'#d48a5e', color: 'white' }}
           >
             <ListItemText style = {{textAlign: 'center'}} primary="Head Only CrowdHuman + FDST" slotProps={{primary: {sx: {fontSize: '30px'}}}}/>
           </ListItemButton>
@@ -144,7 +147,7 @@ export default function Home() {
           <ListItemButton
             selected={viewName === "1"}
             onClick={() => viewClick("1")}
-            style={{ borderRadius: '10px', backgroundColor: viewName === "1" ? '#0c3181' : '#6ebae6', color: 'white' }}
+            style={{ borderRadius: '10px', backgroundColor: viewName === "1" ? '#ca5410':'#d48a5e', color: 'white' }}
           >
             <ListItemText style = {{textAlign: 'center'}} primary="No Boxes" slotProps={{primary: {sx: {fontSize: '30px'}}}}/>
           </ListItemButton>
@@ -154,7 +157,7 @@ export default function Home() {
           <ListItemButton
             selected={viewName === "2"}
             onClick={() => viewClick("2")}
-            style={{ borderRadius: '10px', backgroundColor: viewName === "2" ? '#0c3181' : '#6ebae6', color: 'white' }}
+            style={{ borderRadius: '10px', backgroundColor: viewName === "2" ? '#ca5410':'#d48a5e', color: 'white' }}
           >
             <ListItemText style = {{textAlign: 'center'}} primary="YOLO Bounding Boxes" slotProps={{primary: {sx: {fontSize: '30px'}}}}/>
           </ListItemButton>
@@ -164,7 +167,7 @@ export default function Home() {
           <ListItemButton
             selected={viewName === "3"}
             onClick={() => viewClick("3")}
-            style={{ borderRadius: '10px', backgroundColor: viewName === "3" ? '#0c3181' : '#6ebae6', color: 'white' }}
+            style={{ borderRadius: '10px', backgroundColor: viewName === "3" ? '#ca5410':'#d48a5e', color: 'white' }}
           >
             <ListItemText style = {{textAlign: 'center'}} primary="Custom Bounding Boxes" slotProps={{primary: {sx: {fontSize: '30px'}}}}/>
           </ListItemButton>
@@ -178,7 +181,7 @@ export default function Home() {
           <ListItemButton
             selected={sliceName === "0"}
             onClick={() => sliceClick("0")}
-            style={{ borderRadius: '10px', backgroundColor: sliceName === "0" ? '#0c3181' : '#6ebae6', color: 'white' }}
+            style={{ borderRadius: '10px', backgroundColor: sliceName === "0" ? '#ca5410':'#d48a5e', color: 'white' }}
           >
             <ListItemText style = {{textAlign: 'center'}} primary="Slice Off" slotProps={{primary: {sx: {fontSize: '30px'}}}}/>
           </ListItemButton>
@@ -188,7 +191,7 @@ export default function Home() {
           <ListItemButton
             selected={sliceName === "1"}
             onClick={() => sliceClick("1")}
-            style={{ borderRadius: '10px', backgroundColor: sliceName === "1" ? '#0c3181' : '#6ebae6', color: 'white' }}
+            style={{ borderRadius: '10px', backgroundColor: sliceName === "1" ? '#ca5410':'#d48a5e', color: 'white' }}
           >
             <ListItemText style = {{textAlign: 'center'}} primary="Slice On" slotProps={{primary: {sx: {fontSize: '30px'}}}} />
           </ListItemButton>
@@ -214,7 +217,7 @@ export default function Home() {
 
   return (
     <div style = {{display: "flex", flexDirection: "column", height: "100vh", width: "100vw"}}>
-      <div style = {{display: 'flex', height: "10%", justifyContent:"center", alignItems: "center", backgroundColor: "#105885"}}>
+      <div style = {{display: 'flex', height: "10%", justifyContent:"center", alignItems: "center", backgroundColor: "#000000"}}>
         <h1 style = {{fontSize: '80px', color: "#ffffff"}}>
             Crowd Web
         </h1>
@@ -253,14 +256,14 @@ export default function Home() {
             <div style= {{display: 'flex',  height: "20%", width: "100%", backgroundColor: '#000000'}}></div>
         
         </div>
-        <div style= {{display: 'flex', width: "87%", backgroundColor: '#84a706'}}>
+        <div style= {{display: 'flex', width: "87%", backgroundColor: '#000000'}}>
           <Drawer open={rightDrawer} onClose={rightDrawerClick} anchor = 'right'>
             {drawerList}
           </Drawer>
           <div style= {{display: 'flex', flexGrow: "1", backgroundColor: "#919191", borderRadius: "100px", margin: "15px", justifyContent: 'center', alignItems: 'center'}}>
             <div style={{ display: 'flex', height: '80%', width: "60%" }}>
               <img
-                src="http://localhost:5000/video_feed"
+                src={`${backendURL}/video_feed`}
                 onError={(e) => {
                   console.warn("Video feed failed. Retrying...");
                   setTimeout(() => {
@@ -281,7 +284,7 @@ export default function Home() {
                 {peopleCount}
               </p>
               <div style= {{display: 'flex', width: '50%', height: '8%', margin: '10px 0 10px 0', justifyContent: 'center', alignItems: 'center', margin: "120px 20px"}}>
-                <button style = {{cursor: 'pointer', borderRadius: '50px', border:'none', width: "100%", height: "100%", whiteSpace: "normal", backgroundColor: rightDrawer ? '#6ebae6': '#0c3181', textAlign: "center", fontSize: "25px"}} onClick = {()=> rightDrawerClick()}>Options</button>
+                <button style = {{cursor: 'pointer', borderRadius: '50px', border:'none', width: "100%", height: "100%", whiteSpace: "normal", backgroundColor: rightDrawer ? '#d48a5e': '#ca5410', textAlign: "center", fontSize: "25px"}} onClick = {()=> rightDrawerClick()}>Options</button>
               </div>
             </div>
           </div>

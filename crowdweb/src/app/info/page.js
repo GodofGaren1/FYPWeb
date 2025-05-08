@@ -13,8 +13,11 @@ export default function Home() {
 
   const defaultURL = 'https://www.youtube.com/watch?v=DjdUEyjx8GM'
 
+  const backendURL = "http://localhost:5000"
+  // const backendURL = "13.210.21.192:5000"
+
   const changeURL = async (url) => {
-    fetch("http://localhost:5000/change_url",{
+    fetch(`${backendURL}/change_url`,{
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -29,13 +32,13 @@ export default function Home() {
 
   return (
     <div style = {{display: "flex", flexDirection: "column", height: "100vh", width: "100vw"}}>
-      <div style = {{display: 'flex', height: "10%", justifyContent:"center", alignItems: "center", backgroundColor: "#105885"}}>
+      <div style = {{display: 'flex', height: "10%", justifyContent:"center", alignItems: "center", backgroundColor: "#000000"}}>
         <h1 style = {{fontSize: '80px', color: "#ffffff"}}>
             Crowd Web
         </h1>
       </div>
       <div style = {{display: 'flex', height: "90%", backgroundColor: "#919191"}}>
-        <div style= {{display: 'flex', flexDirection: "column", width: "13%", justifyContent:"center", alignItems: "center", backgroundColor: '#010b11'}}>
+        <div style= {{display: 'flex', flexDirection: "column", width: "13%", justifyContent:"center", alignItems: "center", backgroundColor: '#000000'}}>
           <Link href="/" passHref legacyBehavior>
             <div style={{ textDecoration: 'none', width: '100%',display: 'flex',
                   justifyContent: "center",
@@ -68,7 +71,7 @@ export default function Home() {
           <div style= {{display: 'flex',  height: "20%", width: "100%", backgroundColor: '#000000'}}></div>
 
         </div>
-        <div style= {{display: 'flex', justifyContent:'center', alignItems:'center', flexDirection: 'column', width: "87%", backgroundColor: '#84a706'}}>
+        <div style= {{display: 'flex', justifyContent:'center', alignItems:'center', flexDirection: 'column', width: "87%", backgroundColor: '##919191'}}>
           <p style = {{display: 'flex', color: "#000000", fontSize: "80px", marginBottom: "25px"}}>
             Youtube URL:
           </p>
@@ -86,9 +89,9 @@ export default function Home() {
               marginBottom: '40px'
             }}
           />
-          <button style= {{ whiteSpace: "normal", cursor: 'pointer', marginBottom: '40px',height: '60px', width:'350px', borderRadius:"50px", fontSize: "50px"}} onClick = {()=> changeURL(URL)}>Submit</button>
+          <button style= {{ whiteSpace: "normal", cursor: 'pointer', border:'none', marginBottom: '40px',height: '60px', width:'350px', borderRadius:"50px", fontSize: "50px", backgroundColor: "#ca5410"}} onClick = {()=> changeURL(URL)}>Submit</button>
           <div></div>
-          <button style= {{ whiteSpace: "normal", cursor: 'pointer',height: '50px', width:'200px', borderRadius:"50px", fontSize: "30px"}} onClick = {()=> changeURL(defaultURL)}>Default</button>
+          <button style= {{ whiteSpace: "normal", cursor: 'pointer', border:'none', height: '50px', width:'200px', borderRadius:"50px", fontSize: "30px", backgroundColor: "#ca5410"}} onClick = {()=> changeURL(defaultURL)}>Default</button>
         </div>
       </div>
     </div>
